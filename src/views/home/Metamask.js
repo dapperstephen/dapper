@@ -1,7 +1,7 @@
+import Vue from 'vue'
 import { ethers } from 'ethers'
 import BN from 'bn.js'
 let Provider = null
-import Web3 from 'web3'
 
 
 let ABI = [
@@ -22,6 +22,7 @@ const queryAddress = '0x426a0641fA825a9bC12946c8A2c9F0F086a71fEe'
 async function getWeb3 () {
   var accounts = await requestAccounts()
   console.log('当前使用账号：', accounts[0])
+  Vue.prototype.accounts = accounts[0]
   return accounts[0]
 }
 
@@ -36,9 +37,6 @@ async function queryPools () {
     console.log('币种:', pools)
     for (let index = 0; index < pools.length; index++) {
       const element = pools[1];
-      console.log(element)
-      var result =  web3.eth.abi.decodeParameters(['uint256','uint256','uint256','uint256'], pools[1])
-      console.log(result)
     }
     return pools
   } catch (error) {

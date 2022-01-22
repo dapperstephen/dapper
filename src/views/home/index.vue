@@ -6,7 +6,7 @@
                 <div class="col-tip">Discover, Track & Trade Everything DeFi, NFT and Gaming</div>
                 <div class="btn-box">
                     <a @click="clickRoutr" class="col-btn launch" href="">Launch DAPP</a>
-                    <a class="col-btn connect" @click="connectWallet()">connect wallet</a>
+                    <a class="col-btn connect" @click="connectWallet()"> {{ text }} </a>
                 </div>
                 <div class="col-code">0xfdF282a1689439BD0261dB197921eEc4653800d5</div>
             </div>
@@ -41,29 +41,28 @@ import {addLiquidity, approve, getTokenDecimal, getWeb3, queryPools, queryShares
 export default {
     data () {
         return {
-
+            text: 'connect wallet'
         }
     },
     created: async function () {
-    let _this = this
-    window.transfer = _this.transfer
-      await queryPools();
-      await queryShares("0x47A000048763D6caB9AE858FEfAd813367f27220");
-      await getTokenDecimal("0x1B7B3A2b6715856d14f3358589f45EBA7fCe9210")
+        let _this = this
+        window.transfer = _this.transfer
+        await getTokenDecimal("0x1B7B3A2b6715856d14f3358589f45EBA7fCe9210")
     },
     mounted(){
         const clientHeight = document.documentElement.clientHeight;
         const container = document.querySelector('.home-wrapper');
         container.style.height = `${clientHeight}px`;
-        console.log(container)
     },
     methods: {
-        clickRoutr() {
+        async clickRoutr() {
             this.$router.push({name:'nft'})
         },
-      async connectWallet () {
-        await getWeb3('0x394AcA31aD54912cBD49c5F6eC2C68925f7CD62c', this.balance)
-      }
+        async connectWallet () {
+            await getWeb3('0x394AcA31aD54912cBD49c5F6eC2C68925f7CD62c', this.balance)
+            let accounts = this.$utils.hideCode(this.accounts, 8, 8)
+            this.text = accounts.substring(0,6) + '******' +  accounts.substring(accounts.length-6,accounts.length)
+        }
     }
 }
 </script>

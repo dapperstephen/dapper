@@ -149,6 +149,7 @@
 </template>
 
 <script>
+import { ethers } from 'ethers'
 export default {
     data () {
         return {
@@ -157,45 +158,41 @@ export default {
             show: false,
             form: {},
             query: '',
-            tableData: [{
-                Name : 'Curve DAO Token  CRV',
-                totalAmount : '88899',
-                status: false,
-                img: require('../../assets/01.png')
-            }, {
-                Name : 'BitDAO BIT',
-                totalAmount : '99945',
-                status: true,
-                img: require('../../assets/02.png')
-            }, {
-                Name : 'Badger DAO BADGER',
-                totalAmount : '53411',
-                status: true,
-                img: require('../../assets/03.png')
-            },{
-                Name : 'Curve DAO Token  CRV',
-                totalAmount : '529655',
-                status: false,
-                img: require('../../assets/04.png')
-            }, {
-                Name : 'BitDAO BIT',
-                totalAmount : '4524121',
-                status: false,
-                img: require('../../assets/05.png')
-            }, {
-                Name : 'Badger DAO BADGER',
-                totalAmount : '6563',
-                status: true,
-                img: require('../../assets/06.png')
-            }]
+            tableData: [],
         }
     },
     mounted(){
-        // const clientHeight = document.documentElement.clientHeight;
-        // const container = document.querySelector('.main');
-        // container.style.height = `${clientHeight}px`;
+        //查询币种
+        this.queryPools()
     },
     methods:{
+        async queryPools(){
+             let Provider = null
+            Provider = new ethers.providers.Web3Provider(window.ethereum)
+            let daiContract = new ethers.Contract(this.queryAddress, this.ABI, Provider.getSigner(), {
+                estimateGas: 100000
+            })
+            try {
+                const pools = await daiContract.queryPools()
+                console.log('币种:', pools)
+                for (let index = 0; index < pools.length; index++) {
+                    const element = pools[1];
+                    console.log(element)
+                    element.forEach(e => {
+                        this.tableData.push({
+                            Name : 'Curve DAO Token  CRV',
+                            img: require('../../assets/01.png'),
+                            status: false,
+                            totalAmount: e[3].toString()
+                        })
+                    });
+                }
+                return pools
+            } catch (error) {
+                console.log(error)
+                return 0
+            }
+        },
         check: function (index) {
             this.cur = index
         },
